@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Tejaswi Mandem — Data & AI Professional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+/* ======= RESET & VARS ======= */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --indigo:#3d2fa9;
+  --indigo-mid:#5540d4;
+  --pink:#ff2d78;
+  --cyan:#00e5ff;
+  --amber:#ffb703;
+  --bg:#07060f;
+  --bg2:#0e0c1e;
+  --bg3:#13112a;
+  --text:#e8e4ff;
+  --text-dim:#9490b8;
+  --card:#12102a;
+  --card2:#1a183a;
+  --border:rgba(93,72,255,0.18);
+  --glow-pink:rgba(255,45,120,0.35);
+  --glow-cyan:rgba(0,229,255,0.3);
+  --glow-amber:rgba(255,183,3,0.3);
+  --font-head:'Syne',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  overflow-x:hidden;
+  cursor:none;
+}
+body.loaded #loader{opacity:0;pointer-events:none}
+/* ======= NOISE TEXTURE ======= */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;opacity:0.6;
+}
+/* ======= SCROLLBAR ======= */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--pink),var(--cyan));border-radius:3px}
+/* ======= CURSOR ======= */
+#cursor-dot{
+  position:fixed;width:8px;height:8px;
+  background:var(--cyan);border-radius:50%;
+  pointer-events:none;z-index:10000;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 12px var(--cyan),0 0 24px var(--cyan);
+  transition:transform .1s,width .2s,height .2s;
+}
+#cursor-ring{
+  position:fixed;width:36px;height:36px;
+  border:2px solid var(--pink);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 8px var(--glow-pink);
+  transition:transform .18s ease,left .12s ease,top .12s ease,width .2s,height .2s;
+}
+body:hover #cursor-ring{opacity:1}
+/* ======= LOADER ======= */
+#loader{
+  position:fixed;inset:0;z-index:9998;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .7s ease .1s;
+}
+.loader-initials{
+  font-family:var(--font-head);font-size:clamp(4rem,12vw,9rem);font-weight:800;
+  background:linear-gradient(135deg,var(--pink),var(--cyan),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;letter-spacing:-2px;
+  animation:pulse-loader 1s ease-in-out infinite alternate;
+}
+@keyframes pulse-loader{from{opacity:.6;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+.loader-bar-wrap{
+  width:280px;height:4px;background:rgba(255,255,255,.08);
+  border-radius:4px;margin-top:32px;overflow:hidden;
+}
+.loader-bar{
+  height:100%;width:0%;border-radius:4px;
+  background:linear-gradient(90deg,var(--pink),var(--cyan),var(--amber));
+  animation:load-fill 2s ease forwards;
+}
+@keyframes load-fill{0%{width:0%}60%{width:75%}100%{width:100%}}
+.loader-label{
+  font-family:var(--font-body);font-size:.85rem;color:var(--text-dim);
+  letter-spacing:.15em;text-transform:uppercase;margin-top:14px;
+}
+/* ======= CANVAS ======= */
+#bg-canvas{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+}
+/* ======= NAV ======= */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:18px 5%;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(7,6,15,0.55);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  transform:translateY(-100%);animation:slide-nav .7s .2s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes slide-nav{to{transform:translateY(0)}}
+.nav-logo{
+  font-family:var(--font-head);font-size:1.25rem;font-weight:800;
+  background:linear-gradient(90deg,var(--cyan),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  letter-spacing:-0.5px;text-decoration:none;
+}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{
+  font-family:var(--font-body);font-size:.9rem;font-weight:500;
+  color:var(--text-dim);text-decoration:none;
+  position:relative;padding-bottom:3px;letter-spacing:.03em;
+  transition:color .2s;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:0;left:0;width:0;height:2px;
+  background:linear-gradient(90deg,var(--pink),var(--cyan));
+  border-radius:2px;transition:width .3s ease;
+}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{width:100%}
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer}
+.nav-toggle span{display:block;width:24px;height:2px;background:var(--text);border-radius:2px;transition:.3s}
+/* ======= LAYOUT ======= */
+main{position:relative;z-index:2}
+section{padding:100px 5%;max-width:1280px;margin:0 auto}
+/* ======= HERO ======= */
+#hero{
+  min-height:100vh;padding-top:120px;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;
+  align-items:center;position:relative;overflow:hidden;
+}
+.hero-left{display:flex;flex-direction:column;gap:28px}
+.avail-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.25);
+  color:var(--cyan);font-size:.8rem;letter-spacing:.12em;
+  text-transform:uppercase;padding:6px 14px;border-radius:100px;
+  width:fit-content;font-weight:600;
+}
+.avail-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--cyan);
+  animation:blink-dot 1.4s ease-in-out infinite;
+}
+@keyframes blink-dot{0%,100%{opacity:1;box-shadow:0 0 6px var(--cyan)}50%{opacity:.3;box-shadow:none}}
+.hero-name{
+  font-family:var(--font-head);font-size:clamp(2.8rem,5.5vw,5.2rem);
+  font-weight:800;line-height:1.06;letter-spacing:-2px;
+  background:linear-gradient(135deg,#fff 0%,var(--cyan) 35%,var(--pink) 65%,var(--amber) 100%);
+  background-size:300% 300%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:shimmer-name 4s ease infinite;
+}
+@keyframes shimmer-name{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+.hero-sub{
+  font-family:var(--font-body);font-size:clamp(1rem,1.8vw,1.3rem);
+  color:var(--text-dim);font-weight:300;line-height:1.5;
+}
+.hero-sub span{color:var(--amber);font-weight:500}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 28px;border-radius:100px;font-family:var(--font-body);
+  font-size:.9rem;font-weight:600;letter-spacing:.03em;cursor:pointer;
+  text-decoration:none;transition:transform .2s,box-shadow .2s;
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--pink),var(--indigo-mid));
+  color:#fff;border:none;
+  box-shadow:0 4px 24px var(--glow-pink);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 36px var(--glow-pink)}
+.btn-outline{
+  background:transparent;color:var(--cyan);
+  border:1.5px solid rgba(0,229,255,.4);
+}
+.btn-outline:hover{transform:translateY(-2px);background:rgba(0,229,255,.07);box-shadow:0 4px 20px var(--glow-cyan)}
+/* ======= HERO CARD ======= */
+.hero-right{display:flex;justify-content:center;align-items:center;position:relative}
+.card-scene{
+  position:relative;width:320px;height:380px;
+  animation:float-card 5s ease-in-out infinite;
+}
+@keyframes float-card{
+  0%,100%{transform:translateY(0) rotateY(0deg)}
+  25%{transform:translateY(-12px) rotateY(3deg)}
+  75%{transform:translateY(8px) rotateY(-2deg)}
+}
+.orb-bg{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(85,64,212,.5) 0%,transparent 70%);
+  filter:blur(40px);animation:orb-pulse 4s ease-in-out infinite;
+}
+@keyframes orb-pulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.15)}}
+.spin-ring{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:300px;height:300px;border-radius:50%;
+  border:2px dashed rgba(0,229,255,.3);
+  animation:spin-ring 12s linear infinite;
+}
+@keyframes spin-ring{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.hero-card{
+  position:relative;z-index:2;
+  width:100%;height:100%;
+  background:linear-gradient(145deg,rgba(26,24,58,.95),rgba(18,16,42,.95));
+  border:1px solid var(--border);border-radius:24px;
+  padding:40px 36px;
+  box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 40px rgba(85,64,212,.15);
+  backdrop-filter:blur(10px);
+  display:flex;flex-direction:column;align-items:center;gap:24px;
+}
+.card-avatar{
+  width:90px;height:90px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),var(--indigo-mid),var(--cyan));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:2rem;font-weight:800;color:#fff;
+  box-shadow:0 0 30px var(--glow-pink);
+}
+.card-role{
+  font-family:var(--font-head);font-size:1.1rem;font-weight:700;
+  text-align:center;color:var(--text);
+}
+.card-loc{font-size:.82rem;color:var(--text-dim);text-align:center}
+.card-stats{
+  display:flex;gap:16px;width:100%;
+  border-top:1px solid var(--border);padding-top:20px;
+}
+.stat{flex:1;text-align:center}
+.stat-num{
+  font-family:var(--font-head);font-size:1.5rem;font-weight:800;
+  background:linear-gradient(135deg,var(--cyan),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.stat-label{font-size:.72rem;color:var(--text-dim);letter-spacing:.06em;margin-top:2px}
+/* ======= SECTION TITLES ======= */
+.sec-label{
+  display:inline-block;
+  font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--pink);font-weight:600;margin-bottom:10px;
+}
+.sec-title{
+  font-family:var(--font-head);
+  font-size:clamp(2rem,4vw,3.2rem);
+  font-weight:800;letter-spacing:-1.5px;
+  line-height:1.1;margin-bottom:50px;
+}
+.sec-title span{
+  background:linear-gradient(135deg,var(--cyan),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+/* ======= MARQUEE ======= */
+.marquee-wrap{
+  width:100vw;margin-left:calc(-5% - 0px);overflow:hidden;
+  padding:20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  background:rgba(13,11,30,.6);margin-bottom:80px;
+}
+.marquee-track{
+  display:flex;gap:60px;white-space:nowrap;
+  animation:marquee-scroll 22s linear infinite;
+}
+@keyframes marquee-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.marquee-item{
+  font-family:var(--font-head);font-size:.85rem;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text-dim);display:flex;align-items:center;gap:16px;
+}
+.marquee-item::after{content:'✦';color:var(--amber)}
+/* ======= SKILLS ======= */
+#skills .skills-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:36px 60px;
+  margin-bottom:60px;
+}
+.skill-item{display:flex;flex-direction:column;gap:8px}
+.skill-meta{display:flex;justify-content:space-between;align-items:center}
+.skill-name{font-size:.9rem;font-weight:500;color:var(--text)}
+.skill-pct{font-size:.8rem;color:var(--text-dim)}
+.bar-bg{
+  height:7px;background:rgba(255,255,255,.07);
+  border-radius:10px;overflow:hidden;
+}
+.bar-fill{
+  height:100%;border-radius:10px;width:0%;
+  transition:width 1.2s cubic-bezier(.22,1,.36,1);
+  position:relative;overflow:hidden;
+}
+.bar-fill.fill-cyan{background:linear-gradient(90deg,var(--cyan),var(--indigo-mid))}
+.bar-fill.fill-pink{background:linear-gradient(90deg,var(--pink),var(--amber))}
+.bar-fill.fill-amber{background:linear-gradient(90deg,var(--amber),var(--pink))}
+.bar-fill.fill-indigo{background:linear-gradient(90deg,var(--indigo-mid),var(--cyan))}
+.bar-fill::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+  transform:translateX(-100%);
+}
+.bar-fill.shimmer::after{animation:bar-shimmer .8s ease .5s forwards}
+@keyframes bar-shimmer{to{transform:translateX(300%)}}
+/* ======= CHIPS ======= */
+.chip-cloud{
+  display:flex;flex-wrap:wrap;gap:10px;
+  margin-top:10px;
+}
+.chip{
+  padding:6px 16px;border-radius:100px;
+  font-size:.78rem;font-weight:600;letter-spacing:.04em;
+  transition:transform .2s,box-shadow .2s;cursor:default;
+}
+.chip:hover{transform:translateY(-4px)}
+.chip-cyan{background:rgba(0,229,255,.1);color:var(--cyan);border:1px solid rgba(0,229,255,.25)}
+.chip-pink{background:rgba(255,45,120,.1);color:var(--pink);border:1px solid rgba(255,45,120,.25)}
+.chip-amber{background:rgba(255,183,3,.1);color:var(--amber);border:1px solid rgba(255,183,3,.25)}
+.chip-indigo{background:rgba(85,64,212,.15);color:#a89dff;border:1px solid rgba(85,64,212,.3)}
+/* ======= EXPERIENCE TIMELINE ======= */
+.timeline{display:flex;flex-direction:column;gap:0;position:relative}
+.timeline::before{
+  content:'';position:absolute;left:20px;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--pink),var(--cyan),var(--amber),var(--pink));
+  border-radius:2px;
+}
+.exp-card{
+  margin-left:56px;position:relative;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:18px;padding:32px 36px;margin-bottom:24px;
+  transition:transform .3s ease,box-shadow .3s;
+}
+.exp-card:hover{transform:translateX(6px);box-shadow:0 8px 40px rgba(85,64,212,.18)}
+.exp-card::before{
+  content:'';position:absolute;left:-48px;top:36px;
+  width:14px;height:14px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),var(--cyan));
+  box-shadow:0 0 12px var(--glow-cyan);
+}
+.exp-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.exp-title-wrap{}
+.exp-title{font-family:var(--font-head);font-size:1.2rem;font-weight:700;color:var(--text)}
+.exp-company{
+  font-size:.9rem;font-weight:600;margin-top:3px;
+  background:linear-gradient(90deg,var(--cyan),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.exp-meta{text-align:right}
+.exp-dates{font-size:.8rem;color:var(--text-dim);font-weight:500}
+.exp-loc{font-size:.78rem;color:var(--text-dim);margin-top:2px}
+.exp-desc{
+  list-style:none;display:flex;flex-direction:column;gap:8px;
+  margin-top:16px;
+}
+.exp-desc li{
+  font-size:.88rem;line-height:1.65;color:rgba(232,228,255,.8);
+  padding-left:18px;position:relative;
+}
+.exp-desc li::before{
+  content:'▹';position:absolute;left:0;color:var(--cyan);
+}
+.exp-badges{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
+/* ======= PROJECTS ======= */
+.projects-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
+}
+.proj-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:18px;padding:30px 26px;
+  position:relative;overflow:hidden;
+  transition:transform .3s,box-shadow .3s;
+  display:flex;flex-direction:column;gap:14px;
+}
+.proj-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.proj-card::before{
+  content:'';position:absolute;top:0;left:-100%;width:100%;height:3px;
+  background:linear-gradient(90deg,var(--pink),var(--cyan),var(--amber));
+  transition:left .4s ease;
+}
+.proj-card:hover::before{left:0}
+.proj-emoji{font-size:2rem}
+.proj-name{font-family:var(--font-head);font-size:1.05rem;font-weight:700;color:var(--text)}
+.proj-desc{font-size:.84rem;line-height:1.6;color:var(--text-dim);flex:1}
+.proj-tech{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+/* ======= EDUCATION ======= */
+.edu-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:50px}
+.edu-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:18px;padding:28px 30px;
+  transition:transform .3s,box-shadow .3s;
+}
+.edu-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(85,64,212,.15)}
+.edu-deg{font-family:var(--font-head);font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:6px}
+.edu-inst{font-size:.88rem;font-weight:600;color:var(--cyan);margin-bottom:4px}
+.edu-dates{font-size:.8rem;color:var(--text-dim)}
+.lang-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.lang-badge{
+  display:flex;align-items:center;gap:8px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:100px;padding:8px 18px;
+  font-size:.85rem;font-weight:500;color:var(--text);
+  transition:transform .2s;
+}
+.lang-badge:hover{transform:scale(1.05)}
+.lang-dot{width:10px;height:10px;border-radius:50%}
+/* ======= CONTACT ======= */
+#contact .contact-wrap{
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+}
+.contact-cards{display:flex;flex-direction:column;gap:14px}
+.contact-card{
+  display:flex;align-items:center;gap:16px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:18px 22px;
+  transition:transform .3s,box-shadow .3s;text-decoration:none;color:inherit;
+}
+.contact-card:hover{transform:translateX(8px);box-shadow:0 6px 30px rgba(0,229,255,.12)}
+.contact-icon{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;
+}
+.ci-pink{background:rgba(255,45,120,.12);color:var(--pink)}
+.ci-cyan{background:rgba(0,229,255,.12);color:var(--cyan)}
+.ci-amber{background:rgba(255,183,3,.12);color:var(--amber)}
+.ci-indigo{background:rgba(85,64,212,.15);color:#a89dff}
+.contact-label{font-size:.75rem;color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.contact-val{font-size:.92rem;font-weight:500;color:var(--text)}
+/* ======= RIPPLE AVATAR ======= */
+.ripple-wrap{
+  display:flex;align-items:center;justify-content:center;
+  position:relative;width:280px;height:280px;margin:0 auto;
+}
+.ripple{
+  position:absolute;border-radius:50%;border:2px solid rgba(255,45,120,.3);
+  animation:ripple-out 2.4s ease-out infinite;
+}
+.ripple:nth-child(1){width:160px;height:160px;animation-delay:0s}
+.ripple:nth-child(2){width:210px;height:210px;animation-delay:.6s}
+.ripple:nth-child(3){width:260px;height:260px;animation-delay:1.2s}
+@keyframes ripple-out{
+  0%{opacity:.7;transform:scale(.92)}
+  100%{opacity:0;transform:scale(1.08)}
+}
+.ripple-avatar{
+  position:relative;z-index:2;
+  width:110px;height:110px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),var(--indigo-mid),var(--cyan));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:2.4rem;font-weight:800;color:#fff;
+  box-shadow:0 0 50px var(--glow-pink),0 0 80px rgba(85,64,212,.4);
+}
+/* ======= FOOTER ======= */
+footer{
+  text-align:center;padding:40px 5%;
+  border-top:1px solid var(--border);
+  font-size:.82rem;color:var(--text-dim);position:relative;z-index:2;
+}
+footer span{
+  background:linear-gradient(90deg,var(--pink),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-weight:600;
+}
+/* ======= REVEAL ANIMATIONS ======= */
+.reveal{opacity:0;transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+.reveal.from-bottom{transform:translateY(40px)}
+.reveal.from-left{transform:translateX(-40px)}
+.reveal.from-right{transform:translateX(40px)}
+.reveal.visible{opacity:1;transform:none}
+/* ======= RESPONSIVE ======= */
+@media(max-width:900px){
+  #hero{grid-template-columns:1fr;text-align:center;gap:40px}
+  .hero-ctas{justify-content:center}
+  .hero-right{display:none}
+  #skills .skills-grid{grid-template-columns:1fr}
+  .projects-grid{grid-template-columns:1fr 1fr}
+  .edu-grid{grid-template-columns:1fr}
+  #contact .contact-wrap{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .nav-toggle{display:flex}
+  .timeline::before{left:10px}
+  .exp-card{margin-left:36px}
+  .exp-card::before{left:-38px}
+}
+@media(max-width:600px){
+  .projects-grid{grid-template-columns:1fr}
+  .exp-header{flex-direction:column}
+  .exp-meta{text-align:left}
+  nav{padding:14px 5%}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-initials">TM</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+  <div class="loader-label">Initializing Portfolio</div>
+</div>
+
+<!-- BG CANVAS -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">Tej.</a>
+  <ul class="nav-links">
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#play">🎮 Play</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-toggle" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<main>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="avail-tag"><span class="avail-dot"></span>Available for Opportunities</div>
+    <h1 class="hero-name">Tejaswi<br>Mandem</h1>
+    <p class="hero-sub"><span>Data Engineer · Data Scientist · Data Analyst · BI Developer</span><br>🚀 I turn messy data into million-dollar decisions — and I make it look easy.</p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn btn-primary">Get in Touch</a>
+      <a href="#experience" class="btn btn-outline">View My Work</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="card-scene">
+      <div class="orb-bg"></div>
+      <div class="spin-ring"></div>
+      <div class="hero-card">
+        <div class="card-avatar">TM</div>
+        <div class="card-role">Engineer · Scientist · Analyst<br>BI Dev · AI Builder</div>
+        <div class="card-loc">📍 Seattle, WA</div>
+        <div class="card-stats">
+          <div class="stat"><div class="stat-num">4+</div><div class="stat-label">Years Exp</div></div>
+          <div class="stat"><div class="stat-num">8+</div><div class="stat-label">Industries</div></div>
+          <div class="stat"><div class="stat-num">20+</div><div class="stat-label">Tech Stack</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marquee-track">
+    <span class="marquee-item">McKinsey &amp; Company</span>
+    <span class="marquee-item">ANOVA Sports</span>
+    <span class="marquee-item">Apple / CTDI</span>
+    <span class="marquee-item">MIAC Analytics</span>
+    <span class="marquee-item">Accenture</span>
+    <span class="marquee-item">Boehringer Ingelheim</span>
+    <span class="marquee-item">UNC Charlotte</span>
+    <span class="marquee-item">Snowflake</span>
+    <span class="marquee-item">AWS SageMaker</span>
+    <span class="marquee-item">Power BI</span>
+    <span class="marquee-item">Apache Spark</span>
+    <span class="marquee-item">GPT-4 / LangChain</span>
+    <span class="marquee-item">McKinsey &amp; Company</span>
+    <span class="marquee-item">ANOVA Sports</span>
+    <span class="marquee-item">Apple / CTDI</span>
+    <span class="marquee-item">MIAC Analytics</span>
+    <span class="marquee-item">Accenture</span>
+    <span class="marquee-item">Boehringer Ingelheim</span>
+    <span class="marquee-item">UNC Charlotte</span>
+    <span class="marquee-item">Snowflake</span>
+    <span class="marquee-item">AWS SageMaker</span>
+    <span class="marquee-item">Power BI</span>
+    <span class="marquee-item">Apache Spark</span>
+    <span class="marquee-item">GPT-4 / LangChain</span>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<section id="skills" style="max-width:1280px;margin:0 auto;padding:80px 5%">
+  <div class="reveal from-bottom">
+    <span class="sec-label">Expertise</span>
+    <h2 class="sec-title">Technical <span>Proficiencies</span></h2>
+  </div>
+  <div class="skills-grid reveal from-bottom" id="skills-grid">
+    <!-- filled by JS -->
+  </div>
+  <div class="reveal from-bottom" style="margin-top:20px">
+    <p style="font-size:.85rem;color:var(--text-dim);margin-bottom:16px;letter-spacing:.08em;text-transform:uppercase">Full Technology Stack</p>
+    <div class="chip-cloud" id="chip-cloud"></div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" style="max-width:1280px;margin:0 auto;padding:80px 5%">
+  <div class="reveal from-bottom">
+    <span class="sec-label">Career</span>
+    <h2 class="sec-title">Work <span>Experience</span></h2>
+  </div>
+  <div class="timeline" id="timeline"><!-- filled by JS --></div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" style="max-width:1280px;margin:0 auto;padding:80px 5%">
+  <div class="reveal from-bottom">
+    <span class="sec-label">Portfolio</span>
+    <h2 class="sec-title">Featured <span>Projects</span></h2>
+  </div>
+  <div class="projects-grid" id="projects-grid"><!-- filled by JS --></div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education" style="max-width:1280px;margin:0 auto;padding:80px 5%">
+  <div class="reveal from-bottom">
+    <span class="sec-label">Academic</span>
+    <h2 class="sec-title">Education &amp; <span>Credentials</span></h2>
+  </div>
+  <div class="edu-grid reveal from-bottom">
+    <div class="edu-card">
+      <div class="edu-deg">M.S. Data Science &amp; Business Analytics</div>
+      <div class="edu-inst">University of North Carolina at Charlotte</div>
+      <div class="edu-dates">Aug 2022 – May 2024</div>
+      <div class="chip-cloud" style="margin-top:14px">
+        <span class="chip chip-cyan">Machine Learning</span>
+        <span class="chip chip-pink">Business Analytics</span>
+        <span class="chip chip-amber">Statistical Modeling</span>
+      </div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-deg">B.Tech. Computer Science &amp; Engineering</div>
+      <div class="edu-inst">Gayatri Vidya Parishad College of Engineering</div>
+      <div class="edu-dates">Jul 2017 – May 2021</div>
+      <div class="chip-cloud" style="margin-top:14px">
+        <span class="chip chip-indigo">Computer Science</span>
+        <span class="chip chip-cyan">Software Engineering</span>
+        <span class="chip chip-pink">Data Structures</span>
+      </div>
+    </div>
+  </div>
+  <div class="reveal from-bottom" style="margin-top:40px">
+    <p style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;margin-bottom:18px;color:var(--text)">Certifications</p>
+    <div class="lang-row">
+      <div class="lang-badge"><span class="lang-dot" style="background:var(--amber)"></span>AWS Cloud Practitioner</div>
+      <div class="lang-badge"><span class="lang-dot" style="background:var(--cyan)"></span>Power BI</div>
+      <div class="lang-badge"><span class="lang-dot" style="background:var(--pink)"></span>Agile / Scrum</div>
+    </div>
+    <p style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;margin-top:30px;margin-bottom:18px;color:var(--text)">Languages</p>
+    <div class="lang-row">
+      <div class="lang-badge"><span class="lang-dot" style="background:var(--cyan)"></span>English — Fluent</div>
+      <div class="lang-badge"><span class="lang-dot" style="background:var(--pink)"></span>Telugu — Native</div>
+      <div class="lang-badge"><span class="lang-dot" style="background:var(--amber)"></span>Hindi — Conversational</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="max-width:1280px;margin:0 auto;padding:80px 5%">
+  <div class="reveal from-bottom">
+    <span class="sec-label">Reach Out</span>
+    <h2 class="sec-title">Let's <span>Connect</span></h2>
+  </div>
+  <div class="contact-wrap">
+    <div class="contact-cards reveal from-left">
+      <a href="mailto:mandemtejaswi@gmail.com" class="contact-card">
+        <div class="contact-icon ci-pink">✉</div>
+        <div><div class="contact-label">Email</div><div class="contact-val">mandemtejaswi@gmail.com</div></div>
+      </a>
+      <a href="tel:+19808995200" class="contact-card">
+        <div class="contact-icon ci-cyan">📞</div>
+        <div><div class="contact-label">Phone</div><div class="contact-val">+1 (929) 430-6275</div></div>
+      </a>
+      <div class="contact-card">
+        <div class="contact-icon ci-amber">📍</div>
+        <div><div class="contact-label">Location</div><div class="contact-val">Seattle, WA</div></div>
+      </a>
+      <div class="contact-card">
+        <div class="contact-icon ci-indigo">⚡</div>
+        <div><div class="contact-label">Availability</div><div class="contact-val">Open to Full-Time &amp; Contract Roles</div></div>
+      </div>
+    </div>
+    <div class="reveal from-right" style="display:flex;flex-direction:column;align-items:center;gap:24px">
+      <div class="ripple-wrap">
+        <div class="ripple"></div>
+        <div class="ripple"></div>
+        <div class="ripple"></div>
+        <div class="ripple-avatar">TM</div>
+      </div>
+      <p style="text-align:center;color:var(--text-dim);font-size:.9rem;max-width:280px;line-height:1.6">
+        Full-stack data professional building AI-powered systems and scalable analytics pipelines. Let's build something great.
+      </p>
+    </div>
+  </div>
+</section>
+<!-- PLAY SECTION -->
+<section id="play" style="max-width:1280px;margin:0 auto;padding:80px 5%">
+  <div class="reveal from-bottom">
+    <span class="sec-label">Interactive</span>
+    <h2 class="sec-title">🎮 <span>Play & Explore</span></h2>
+    <p style="color:var(--text-dim);font-size:.95rem;margin-top:-30px;margin-bottom:40px">Think you know data? Let's find out — test your skills, guess Tej's stack, and play a data word game!</p>
+  </div>
+
+  <!-- GAME TABS -->
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:36px" id="game-tabs">
+    <button class="game-tab active" onclick="switchGame('quiz')">🧠 Data Quiz</button>
+    <button class="game-tab" onclick="switchGame('guess')">🔍 Guess The Tool</button>
+    <button class="game-tab" onclick="switchGame('wordle')">🟩 Data Wordle</button>
+    <button class="game-tab" onclick="switchGame('trivia')">⚡ Speed Trivia</button>
+  </div>
+
+  <!-- QUIZ GAME -->
+  <div id="game-quiz" class="game-panel">
+    <div class="game-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:10px">
+        <div style="font-family:var(--font-head);font-size:1.1rem;font-weight:700">🧠 Data Engineering Quiz</div>
+        <div style="display:flex;gap:12px;align-items:center">
+          <span style="font-size:.82rem;color:var(--text-dim)">Score: <span id="q-score" style="color:var(--cyan);font-weight:700">0</span></span>
+          <span style="font-size:.82rem;color:var(--text-dim)">Q: <span id="q-num" style="color:var(--amber);font-weight:700">1</span>/10</span>
+        </div>
+      </div>
+      <div id="q-progress-bar" style="height:5px;background:rgba(255,255,255,.07);border-radius:5px;margin-bottom:28px;overflow:hidden">
+        <div id="q-progress" style="height:100%;width:10%;background:linear-gradient(90deg,var(--cyan),var(--pink));border-radius:5px;transition:width .4s ease"></div>
+      </div>
+      <div id="q-question" style="font-size:1.1rem;font-weight:600;line-height:1.6;margin-bottom:24px;color:var(--text)"></div>
+      <div id="q-options" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div id="q-feedback" style="margin-top:18px;font-size:.9rem;min-height:24px;font-weight:500"></div>
+      <div id="q-result" style="display:none;text-align:center;padding:30px 0">
+        <div style="font-size:3rem;margin-bottom:12px" id="q-result-emoji"></div>
+        <div style="font-family:var(--font-head);font-size:1.6rem;font-weight:800;margin-bottom:8px" id="q-result-title"></div>
+        <div style="color:var(--text-dim);margin-bottom:24px" id="q-result-sub"></div>
+        <button class="btn btn-primary" onclick="startQuiz()">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GUESS THE TOOL -->
+  <div id="game-guess" class="game-panel" style="display:none">
+    <div class="game-card">
+      <div style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;margin-bottom:8px">🔍 Guess The Tool From The Clue</div>
+      <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:24px">Tej uses this tool in his work. Can you name it from the description?</p>
+      <div id="gt-clue-box" style="background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.2);border-radius:14px;padding:24px;margin-bottom:24px">
+        <div style="font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);margin-bottom:10px">Clue <span id="gt-num">1</span>/8</div>
+        <div id="gt-clue" style="font-size:1rem;line-height:1.7;color:var(--text)"></div>
+      </div>
+      <div id="gt-options" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
+      <div id="gt-feedback" style="margin-top:16px;font-size:.9rem;min-height:24px;font-weight:500"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px">
+        <span style="font-size:.85rem;color:var(--text-dim)">Score: <span id="gt-score" style="color:var(--amber);font-weight:700">0</span>/<span id="gt-total">8</span></span>
+        <button class="btn btn-outline" id="gt-next" onclick="nextGuess()" style="display:none">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORDLE -->
+  <div id="game-wordle" class="game-panel" style="display:none">
+    <div class="game-card">
+      <div style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;margin-bottom:8px">🟩 Data Wordle</div>
+      <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:20px">Guess the 5-letter data/tech word in 6 tries. 🟩 = right spot · 🟨 = wrong spot · ⬛ = not in word</p>
+      <div id="wordle-board" style="display:flex;flex-direction:column;gap:6px;margin-bottom:20px;align-items:center"></div>
+      <div id="wordle-keyboard" style="display:flex;flex-direction:column;gap:6px;align-items:center;margin-bottom:16px"></div>
+      <div id="wordle-msg" style="text-align:center;font-size:.9rem;font-weight:600;min-height:24px"></div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:16px">
+        <button class="btn btn-primary" onclick="startWordle()">New Word</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPEED TRIVIA -->
+  <div id="game-trivia" class="game-panel" style="display:none">
+    <div class="game-card">
+      <div style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;margin-bottom:8px">⚡ Speed Trivia — 10 Seconds!</div>
+      <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:20px">Answer as fast as you can. Each correct answer = points. Faster = more bonus points!</p>
+      <div id="st-timer-wrap" style="margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:.8rem;color:var(--text-dim)">Time left</span>
+          <span id="st-timer" style="font-family:var(--font-head);font-size:1rem;font-weight:700;color:var(--pink)">10s</span>
+        </div>
+        <div style="height:6px;background:rgba(255,255,255,.07);border-radius:6px;overflow:hidden">
+          <div id="st-timer-bar" style="height:100%;width:100%;background:linear-gradient(90deg,var(--cyan),var(--pink));border-radius:6px;transition:width .1s linear"></div>
+        </div>
+      </div>
+      <div id="st-q" style="font-size:1.05rem;font-weight:600;line-height:1.6;margin-bottom:20px;min-height:60px"></div>
+      <div id="st-options" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;flex-wrap:wrap;gap:8px">
+        <span style="font-size:.85rem;color:var(--text-dim)">Score: <span id="st-score" style="color:var(--cyan);font-weight:700">0</span> pts</span>
+        <span style="font-size:.85rem;color:var(--text-dim)">Q <span id="st-qnum">1</span>/8</span>
+      </div>
+      <div id="st-result" style="display:none;text-align:center;padding:24px 0">
+        <div style="font-size:2.5rem;margin-bottom:10px" id="st-result-emoji"></div>
+        <div style="font-family:var(--font-head);font-size:1.5rem;font-weight:800;margin-bottom:6px">Final Score: <span id="st-final" style="color:var(--cyan)"></span> pts</div>
+        <div style="color:var(--text-dim);margin-bottom:20px" id="st-rank"></div>
+        <button class="btn btn-primary" onclick="startTrivia()">Play Again</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<style>
+.game-tab{
+  padding:10px 22px;border-radius:100px;font-family:var(--font-body);
+  font-size:.85rem;font-weight:600;cursor:pointer;border:1.5px solid var(--border);
+  background:transparent;color:var(--text-dim);transition:all .2s;
+}
+.game-tab:hover{color:var(--text);border-color:rgba(0,229,255,.4)}
+.game-tab.active{background:linear-gradient(135deg,var(--pink),var(--indigo-mid));color:#fff;border-color:transparent;box-shadow:0 4px 20px var(--glow-pink)}
+.game-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;padding:36px;max-width:680px;margin:0 auto;
+}
+.q-option{
+  padding:13px 18px;border-radius:12px;border:1.5px solid var(--border);
+  background:transparent;color:var(--text);font-family:var(--font-body);
+  font-size:.9rem;cursor:pointer;text-align:left;transition:all .2s;width:100%;
+}
+.q-option:hover:not(:disabled){background:rgba(0,229,255,.07);border-color:rgba(0,229,255,.4);transform:translateX(4px)}
+.q-option.correct{background:rgba(0,229,100,.15);border-color:#00e564;color:#00e564}
+.q-option.wrong{background:rgba(255,45,120,.12);border-color:var(--pink);color:var(--pink)}
+.wordle-row{display:flex;gap:6px}
+.wordle-cell{
+  width:52px;height:52px;border:2px solid var(--border);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:1.3rem;font-weight:800;
+  text-transform:uppercase;color:var(--text);transition:all .3s;
+}
+.wordle-cell.filled{border-color:rgba(0,229,255,.5);animation:pop .1s ease}
+@keyframes pop{0%{transform:scale(1.15)}100%{transform:scale(1)}}
+.wordle-cell.correct{background:#00e564;border-color:#00e564;color:#000}
+.wordle-cell.present{background:var(--amber);border-color:var(--amber);color:#000}
+.wordle-cell.absent{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.1);color:var(--text-dim)}
+.kb-row{display:flex;gap:5px}
+.kb-key{
+  padding:10px 8px;min-width:34px;border-radius:7px;
+  background:rgba(255,255,255,.1);border:none;color:var(--text);
+  font-family:var(--font-body);font-size:.8rem;font-weight:600;
+  cursor:pointer;transition:all .2s;
+}
+.kb-key:hover{background:rgba(255,255,255,.18)}
+.kb-key.correct{background:#00e564;color:#000}
+.kb-key.present{background:var(--amber);color:#000}
+.kb-key.absent{background:rgba(255,255,255,.05);color:rgba(255,255,255,.25)}
+</style>
+
+<script>
+/* ===== GAME SWITCHER ===== */
+function switchGame(id){
+  document.querySelectorAll('.game-panel').forEach(p=>p.style.display='none');
+  document.querySelectorAll('.game-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('game-'+id).style.display='block';
+  event.target.classList.add('active');
+  if(id==='quiz')startQuiz();
+  if(id==='guess')startGuess();
+  if(id==='wordle')startWordle();
+  if(id==='trivia')startTrivia();
+}
+
+/* ===== QUIZ ===== */
+const quizQs=[
+  {q:"What does 'ELT' stand for in modern data engineering?",opts:["Extract, Load, Transform","Extract, Link, Transfer","Encode, Load, Transfer","Extract, List, Transform"],a:0},
+  {q:"Which Snowflake schema uses multiple dimension tables connected through other dimension tables?",opts:["Star Schema","Galaxy Schema","Snowflake Schema","Flat Schema"],a:2},
+  {q:"Apache Kafka is primarily used for what?",opts:["Batch ETL processing","Real-time event streaming","Data visualization","ML model training"],a:1},
+  {q:"What does DAX stand for in Power BI?",opts:["Data Analysis Expressions","Dashboard Analytics XML","Data Aggregation eXtension","Direct Access eXpressions"],a:0},
+  {q:"Which AWS service is used for serverless ETL jobs?",opts:["AWS Lambda","AWS Glue","AWS EC2","AWS Kinesis"],a:1},
+  {q:"What is a 'data lakehouse'?",opts:["A data lake with a house icon","Combines data lake storage with data warehouse analytics","A type of NoSQL database","A Hadoop cluster"],a:1},
+  {q:"In machine learning, what does 'overfitting' mean?",opts:["Model is too simple","Model performs great on training data but poor on new data","Model trains too slowly","Model has too few parameters"],a:1},
+  {q:"What does FAISS stand for in AI?",opts:["Fast Approximate Image Search System","Facebook AI Similarity Search","Flexible AI Indexing & Search System","Fast Async Indexing Search Service"],a:1},
+  {q:"Which Python library is dbt built on top of for data transformation?",opts:["pandas","SQLAlchemy","Jinja2 + SQL","PySpark"],a:2},
+  {q:"What is a 'RAG pipeline' in LLM applications?",opts:["Redundant AI Generation","Retrieval-Augmented Generation","Real-time Agent Gateway","Random Augmented Graph"],a:1},
+];
+let qIdx=0,qScore=0,qAnswered=false;
+function startQuiz(){
+  qIdx=0;qScore=0;qAnswered=false;
+  document.getElementById('q-result').style.display='none';
+  document.getElementById('q-score').textContent='0';
+  renderQuizQ();
+}
+function renderQuizQ(){
+  if(qIdx>=quizQs.length){showQuizResult();return}
+  const q=quizQs[qIdx];
+  document.getElementById('q-num').textContent=qIdx+1;
+  document.getElementById('q-progress').style.width=((qIdx+1)/quizQs.length*100)+'%';
+  document.getElementById('q-question').textContent=q.q;
+  document.getElementById('q-feedback').textContent='';
+  const opts=document.getElementById('q-options');
+  opts.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='q-option';b.textContent=o;
+    b.onclick=()=>answerQuiz(i,b);
+    opts.appendChild(b);
+  });
+  qAnswered=false;
+}
+function answerQuiz(i,btn){
+  if(qAnswered)return;qAnswered=true;
+  const q=quizQs[qIdx];
+  const allBtns=document.querySelectorAll('.q-option');
+  allBtns.forEach(b=>b.disabled=true);
+  if(i===q.a){
+    btn.classList.add('correct');qScore++;
+    document.getElementById('q-score').textContent=qScore;
+    document.getElementById('q-feedback').innerHTML='<span style="color:#00e564">✓ Correct!</span>';
+  } else {
+    btn.classList.add('wrong');
+    allBtns[q.a].classList.add('correct');
+    document.getElementById('q-feedback').innerHTML='<span style="color:var(--pink)">✗ Not quite!</span>';
+  }
+  setTimeout(()=>{qIdx++;renderQuizQ()},1400);
+}
+function showQuizResult(){
+  document.getElementById('q-options').innerHTML='';
+  document.getElementById('q-question').textContent='';
+  document.getElementById('q-feedback').textContent='';
+  const r=document.getElementById('q-result');r.style.display='block';
+  const pct=qScore/quizQs.length;
+  let emoji,title,sub;
+  if(pct>=0.9){emoji='🏆';title='Data Genius!';sub=`${qScore}/10 — Tej would hire you on the spot!`}
+  else if(pct>=0.7){emoji='🔥';title='Strong Skills!';sub=`${qScore}/10 — You clearly know your data stack.`}
+  else if(pct>=0.5){emoji='📈';title='Getting There!';sub=`${qScore}/10 — Keep learning, you're on the right path.`}
+  else{emoji='💡';title='Keep Exploring!';sub=`${qScore}/10 — Check out Tej's skills section for inspiration!`}
+  document.getElementById('q-result-emoji').textContent=emoji;
+  document.getElementById('q-result-title').textContent=title;
+  document.getElementById('q-result-sub').textContent=sub;
+}
+startQuiz();
+
+/* ===== GUESS THE TOOL ===== */
+const guessData=[
+  {clue:"Tej used this cloud data warehouse at Apple to process over 1 million device repair records daily. It separates compute from storage and supports zero-copy cloning.",tool:"Snowflake",opts:["Redshift","Snowflake","BigQuery","Databricks"]},
+  {clue:"This open-source workflow orchestration tool lets Tej build DAGs to schedule and monitor ETL pipelines across 15+ legacy systems at McKinsey.",tool:"Airflow",opts:["Luigi","Airflow","Prefect","Dagster"]},
+  {clue:"Tej used this Microsoft BI tool to build dashboards with DAX measures, drill-through reports, and threshold alert sliders for a $17B+ budget.",tool:"Power BI",opts:["Tableau","Looker","Power BI","QuickSight"]},
+  {clue:"This framework — developed by Meta — lets Tej build similarity search over vector embeddings for RAG pipelines with GPT-4.",tool:"FAISS",opts:["Pinecone","Chroma","FAISS","Weaviate"]},
+  {clue:"Tej used this computer vision model family at ANOVA Sports to classify basketball play actions and defensive formations from video footage.",tool:"YOLOv8",opts:["ResNet","YOLOv8","VGG16","EfficientDet"]},
+  {clue:"This AWS service was Tej's go-to for training regression, classification, and time-series models for Boehringer Ingelheim at Accenture.",tool:"SageMaker",opts:["EC2","Lambda","SageMaker","Glue"]},
+  {clue:"Tej used this LLM orchestration library to connect GPT-4 with vector stores and build conversational interfaces over financial datasets.",tool:"LangChain",opts:["LlamaIndex","AutoGPT","LangChain","Semantic Kernel"]},
+  {clue:"This open-source ML lifecycle tool helped Tej track experiments, log metrics, and manage model versions at ANOVA Sports.",tool:"MLflow",opts:["W&B","MLflow","DVC","ClearML"]},
+];
+let gtIdx=0,gtScore=0,gtAnswered=false;
+function startGuess(){gtIdx=0;gtScore=0;document.getElementById('gt-score').textContent='0';renderGuess()}
+function renderGuess(){
+  if(gtIdx>=guessData.length){
+    document.getElementById('gt-clue-box').innerHTML=`<div style="text-align:center;padding:20px"><div style="font-size:2rem;margin-bottom:10px">${gtScore>=6?'🏆':'🎯'}</div><div style="font-family:var(--font-head);font-size:1.3rem;font-weight:800;margin-bottom:8px">${gtScore>=6?'You Know Tej\'s Stack!':'Nice Try!'}</div><div style="color:var(--text-dim)">Final score: ${gtScore}/${guessData.length}</div></div>`;
+    document.getElementById('gt-options').innerHTML='';
+    document.getElementById('gt-next').style.display='none';
+    return;
+  }
+  const g=guessData[gtIdx];
+  document.getElementById('gt-num').textContent=gtIdx+1;
+  document.getElementById('gt-clue').textContent=g.clue;
+  document.getElementById('gt-feedback').textContent='';
+  document.getElementById('gt-next').style.display='none';
+  gtAnswered=false;
+  const opts=document.getElementById('gt-options');
+  opts.innerHTML='';
+  [...g.opts].sort(()=>Math.random()-.5).forEach(o=>{
+    const b=document.createElement('button');
+    b.className='q-option';b.textContent=o;
+    b.onclick=()=>{
+      if(gtAnswered)return;gtAnswered=true;
+      document.querySelectorAll('#gt-options .q-option').forEach(x=>x.disabled=true);
+      if(o===g.tool){b.classList.add('correct');gtScore++;document.getElementById('gt-score').textContent=gtScore;document.getElementById('gt-feedback').innerHTML='<span style="color:#00e564">✓ Correct! '+g.tool+'</span>'}
+      else{b.classList.add('wrong');document.getElementById('gt-feedback').innerHTML=`<span style="color:var(--pink)">✗ It was ${g.tool}</span>`}
+      document.getElementById('gt-next').style.display='inline-flex';
+    };
+    opts.appendChild(b);
+  });
+}
+function nextGuess(){gtIdx++;renderGuess()}
+
+/* ===== WORDLE ===== */
+const wordleWords=['spark','kafka','delta','trino','arima','glue','dbt','dag','etl','api','sql','elt'];
+const wordleWords5=wordleWords.filter(w=>w.length===5);
+const wordleAll5=['spark','kafka','delta','trino','arima','query','model','pivot','index','table','batch','layer','stack','cache'];
+let wTarget='',wGuesses=[],wCurrent='',wGameOver=false;
+function startWordle(){
+  wTarget=wordleAll5[Math.floor(Math.random()*wordleAll5.length)];
+  wGuesses=[];wCurrent='';wGameOver=false;
+  document.getElementById('wordle-msg').textContent='';
+  renderWordleBoard();renderWordleKeyboard();
+}
+function renderWordleBoard(){
+  const board=document.getElementById('wordle-board');board.innerHTML='';
+  for(let r=0;r<6;r++){
+    const row=document.createElement('div');row.className='wordle-row';
+    for(let c=0;c<5;c++){
+      const cell=document.createElement('div');cell.className='wordle-cell';
+      if(r<wGuesses.length){
+        const g=wGuesses[r];cell.textContent=g.word[c]||'';
+        cell.classList.add(g.result[c]);
+      } else if(r===wGuesses.length){
+        cell.textContent=wCurrent[c]||'';
+        if(wCurrent[c])cell.classList.add('filled');
+      }
+      row.appendChild(cell);
+    }
+    board.appendChild(row);
+  }
+}
+function renderWordleKeyboard(){
+  const kb=document.getElementById('wordle-keyboard');kb.innerHTML='';
+  const rows=['qwertyuiop','asdfghjkl','zxcvbnm'];
+  const states={};
+  wGuesses.forEach(g=>g.word.split('').forEach((ch,i)=>{
+    const s=g.result[i];
+    if(!states[ch]||states[ch]==='absent'||(states[ch]==='present'&&s==='correct'))states[ch]=s;
+  }));
+  rows.forEach((row,ri)=>{
+    const div=document.createElement('div');div.className='kb-row';
+    if(ri===2){
+      const en=document.createElement('button');en.className='kb-key';en.style.padding='10px 12px';en.textContent='⏎';en.onclick=()=>submitWordle();div.appendChild(en);
+    }
+    row.split('').forEach(ch=>{
+      const b=document.createElement('button');b.className='kb-key';b.textContent=ch;
+      if(states[ch])b.classList.add(states[ch]);
+      b.onclick=()=>typeWordle(ch);div.appendChild(b);
+    });
+    if(ri===2){
+      const del=document.createElement('button');del.className='kb-key';del.style.padding='10px 12px';del.textContent='⌫';del.onclick=()=>{if(wCurrent.length>0){wCurrent=wCurrent.slice(0,-1);renderWordleBoard()}};div.appendChild(del);
+    }
+    kb.appendChild(div);
+  });
+}
+function typeWordle(ch){
+  if(wGameOver||wCurrent.length>=5)return;
+  wCurrent+=ch;renderWordleBoard();
+}
+function submitWordle(){
+  if(wGameOver||wCurrent.length<5){document.getElementById('wordle-msg').textContent='Word must be 5 letters!';return}
+  const result=[];
+  const tArr=wTarget.split('');const gArr=wCurrent.split('');
+  const used=Array(5).fill(false);
+  gArr.forEach((ch,i)=>{if(ch===tArr[i]){result[i]='correct';used[i]=true}else result[i]='absent'});
+  gArr.forEach((ch,i)=>{
+    if(result[i]==='correct')return;
+    const ti=tArr.findIndex((t,j)=>t===ch&&!used[j]&&result[j]!=='correct');
+    if(ti!==-1){result[i]='present';used[ti]=true}
+  });
+  wGuesses.push({word:wCurrent,result});wCurrent='';
+  renderWordleBoard();renderWordleKeyboard();
+  const msg=document.getElementById('wordle-msg');
+  if(result.every(r=>r==='correct')){msg.innerHTML=`<span style="color:#00e564">🎉 You got it! The word was <strong>${wTarget.toUpperCase()}</strong></span>`;wGameOver=true}
+  else if(wGuesses.length>=6){msg.innerHTML=`<span style="color:var(--pink)">Game over! The word was <strong>${wTarget.toUpperCase()}</strong></span>`;wGameOver=true}
+}
+document.addEventListener('keydown',e=>{
+  const panel=document.getElementById('game-wordle');
+  if(panel.style.display==='none')return;
+  if(e.key==='Enter')submitWordle();
+  else if(e.key==='Backspace'){if(wCurrent.length>0){wCurrent=wCurrent.slice(0,-1);renderWordleBoard()}}
+  else if(/^[a-z]$/.test(e.key))typeWordle(e.key);
+});
+startWordle();
+
+/* ===== SPEED TRIVIA ===== */
+const triviaQs=[
+  {q:"What Python library does Tej use for time-series forecasting?",opts:["NumPy","Prophet","Keras","Seaborn"],a:1},
+  {q:"Which company embedded Tej at Apple for reverse logistics analytics?",opts:["Accenture","MIAC","CTDI","ANOVA"],a:2},
+  {q:"What is the primary query language Tej uses in Snowflake pipelines?",opts:["Python","SQL","R","Scala"],a:1},
+  {q:"Which framework did Tej use to build LLM pipelines at McKinsey?",opts:["HuggingFace","LangChain","AutoGPT","Rasa"],a:1},
+  {q:"What sport does ANOVA Sports focus on with Tej's CV models?",opts:["Soccer","Baseball","Basketball","Tennis"],a:2},
+  {q:"Which cloud did Tej use at Accenture for pharmaceutical ML?",opts:["Azure","GCP","AWS","IBM Cloud"],a:2},
+  {q:"What BI tool does Tej primarily use for dashboard development?",opts:["Tableau","Looker","Power BI","Metabase"],a:2},
+  {q:"Where did Tej earn his Master's degree?",opts:["Georgia Tech","UNC Charlotte","UT Austin","Carnegie Mellon"],a:1},
+];
+let stIdx=0,stScore=0,stTimer=null,stTimeLeft=10,stAnswered=false;
+function startTrivia(){
+  stIdx=0;stScore=0;
+  document.getElementById('st-score').textContent='0';
+  document.getElementById('st-result').style.display='none';
+  renderTrivia();
+}
+function renderTrivia(){
+  if(stIdx>=triviaQs.length){showTriviaResult();return}
+  const q=triviaQs[stIdx];stAnswered=false;stTimeLeft=10;
+  document.getElementById('st-qnum').textContent=stIdx+1;
+  document.getElementById('st-q').textContent=q.q;
+  document.getElementById('st-timer').textContent='10s';
+  document.getElementById('st-timer-bar').style.width='100%';
+  const opts=document.getElementById('st-options');opts.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement('button');b.className='q-option';b.textContent=o;
+    b.onclick=()=>answerTrivia(i,b);opts.appendChild(b);
+  });
+  clearInterval(stTimer);
+  stTimer=setInterval(()=>{
+    stTimeLeft-=0.1;
+    document.getElementById('st-timer').textContent=Math.ceil(stTimeLeft)+'s';
+    document.getElementById('st-timer-bar').style.width=(stTimeLeft/10*100)+'%';
+    if(stTimeLeft<=3)document.getElementById('st-timer').style.color='var(--pink)';
+    if(stTimeLeft<=0){clearInterval(stTimer);if(!stAnswered){stAnswered=true;document.querySelectorAll('#st-options .q-option').forEach((b,i)=>{b.disabled=true;if(i===triviaQs[stIdx].a)b.classList.add('correct')});setTimeout(()=>{stIdx++;renderTrivia()},1200)}}
+  },100);
+}
+function answerTrivia(i,btn){
+  if(stAnswered)return;stAnswered=true;clearInterval(stTimer);
+  const q=triviaQs[stIdx];
+  document.querySelectorAll('#st-options .q-option').forEach(b=>b.disabled=true);
+  if(i===q.a){btn.classList.add('correct');const bonus=Math.ceil(stTimeLeft);stScore+=10+bonus;document.getElementById('st-score').textContent=stScore;}
+  else{btn.classList.add('wrong');document.querySelectorAll('#st-options .q-option')[q.a].classList.add('correct')}
+  setTimeout(()=>{stIdx++;renderTrivia()},1200);
+}
+function showTriviaResult(){
+  document.getElementById('st-q').textContent='';
+  document.getElementById('st-options').innerHTML='';
+  document.getElementById('st-result').style.display='block';
+  document.getElementById('st-final').textContent=stScore;
+  let emoji,rank;
+  if(stScore>=120){emoji='🚀';rank='Data Rockstar — You\'re built different!'}
+  else if(stScore>=80){emoji='🔥';rank='Data Pro — Solid knowledge of Tej\'s work!'}
+  else if(stScore>=40){emoji='📊';rank='Analyst in Training — Not bad at all!'}
+  else{emoji='💡';rank='Keep exploring — check out Tej\'s portfolio!'}
+  document.getElementById('st-result-emoji').textContent=emoji;
+  document.getElementById('st-rank').textContent=rank;
+  document.getElementById('st-timer-bar').style.width='0%';
+}
+</script>
+
+<footer>
+  <p>Designed &amp; built by <span>Tejaswi Mandem</span> · Seattle, WA · 2025</p>
+</footer>
+
+<script>
+/* ===== DATA ===== */
+const skills = [
+  {name:"Python",pct:95,color:"fill-cyan"},
+  {name:"SQL",pct:95,color:"fill-pink"},
+  {name:"Apache Spark / PySpark",pct:88,color:"fill-amber"},
+  {name:"Snowflake / dbt",pct:90,color:"fill-indigo"},
+  {name:"AWS (EC2, S3, Glue, SageMaker)",pct:87,color:"fill-cyan"},
+  {name:"Power BI / DAX",pct:92,color:"fill-pink"},
+  {name:"Machine Learning (scikit-learn, XGBoost)",pct:85,color:"fill-amber"},
+  {name:"LLM / RAG / LangChain",pct:82,color:"fill-indigo"},
+  {name:"Airflow / Kafka",pct:83,color:"fill-cyan"},
+  {name:"Computer Vision (OpenCV, YOLO)",pct:78,color:"fill-pink"},
+  {name:"Azure / GCP",pct:80,color:"fill-amber"},
+  {name:"R / Statistics / A/B Testing",pct:80,color:"fill-indigo"},
+];
+const chips = [
+  ["Python","chip-cyan"],["SQL","chip-pink"],["R","chip-indigo"],["Shell Scripting","chip-amber"],
+  ["Snowflake","chip-cyan"],["Databricks","chip-pink"],["dbt","chip-amber"],["Airflow","chip-indigo"],
+  ["Kafka","chip-cyan"],["Spark","chip-pink"],["Redshift","chip-amber"],["BigQuery","chip-indigo"],
+  ["PostgreSQL","chip-cyan"],["MySQL","chip-pink"],["AWS Glue","chip-amber"],["SageMaker","chip-indigo"],
+  ["EC2","chip-cyan"],["S3","chip-pink"],["Lambda","chip-amber"],["Kinesis","chip-indigo"],
+  ["Azure","chip-cyan"],["GCP","chip-pink"],["Power BI","chip-amber"],["Tableau","chip-indigo"],
+  ["QuickSight","chip-cyan"],["Looker","chip-pink"],["Streamlit","chip-amber"],["Plotly","chip-indigo"],
+  ["scikit-learn","chip-cyan"],["TensorFlow","chip-pink"],["PyTorch","chip-amber"],["XGBoost","chip-indigo"],
+  ["OpenCV","chip-cyan"],["YOLOv8","chip-pink"],["MLflow","chip-amber"],["LangChain","chip-indigo"],
+  ["GPT-4","chip-cyan"],["RAG","chip-pink"],["FAISS","chip-amber"],["Docker","chip-indigo"],
+  ["Git","chip-cyan"],["CI/CD","chip-pink"],["Jira","chip-amber"],["REST APIs","chip-indigo"],
+  ["Java","chip-pink"],["C++","chip-amber"],["SAS","chip-cyan"],["Matlab","chip-pink"],["SciPy","chip-amber"],["A/B Testing","chip-indigo"],["Hugging Face","chip-cyan"],["Prompt Engineering","chip-pink"],["Power Query","chip-amber"],["VBA","chip-indigo"],
+  ["T-SQL","chip-cyan"],["DAX","chip-pink"],["Pandas","chip-amber"],["NumPy","chip-indigo"],
+];
+const experience = [
+  {
+    title:"Data Engineer",company:"McKinsey & Company",dates:"Feb 2026 – Present",loc:"Seattle, WA",
+    bullets:[
+      "Built Power BI dashboards using Trino & SQL Server to monitor payroll, AP, and revenue for a $17B+ annual budget — 40% improvement in decision-making efficiency.",
+      "Automated ETL via Apache Airflow DAGs extracting from 15+ legacy systems (SAP, Oracle), processing 500K+ daily transactions at 99.9% accuracy, cutting manual effort by 65%.",
+      "Developed LLM-powered RAG pipeline with GPT-4, LangChain, and vector embeddings for natural-language querying of financial datasets — reduced ad-hoc reporting by 50%.",
+      "Engineered advanced DAX measures with drill-through, conditional formatting, and threshold sliders, cutting response time to financial anomalies by 75%.",
+    ],
+    badges:[["Power BI","chip-amber"],["Airflow","chip-cyan"],["GPT-4","chip-pink"],["LangChain","chip-indigo"],["Trino","chip-cyan"],["DAX","chip-amber"]],
+  },
+  {
+    title:"Data Scientist",company:"ANOVA Sports",dates:"Oct 2025 – Feb 2026",loc:"New York, NY",
+    bullets:[
+      "Trained computer vision models (OpenCV, YOLOv8, TensorFlow, PyTorch) to classify basketball play actions, improving play-recognition accuracy by 32% across 200+ college teams.",
+      "Built Linux-based video pipelines on AWS EC2 using FFmpeg and Apache Spark, extracting 50K+ frames from YouTube footage and reducing manual prep by 45%.",
+      "Developed LLM-powered scouting insights via GPT-4, fine-tuned models, and RAG pipelines with semantic search across 500+ statistical categories.",
+      "Built Java-based microservices and REST APIs for real-time basketball analytics, handling high-volume NCAA datasets to evaluate player efficiency and possession-level indicators.",
+      "Established MLOps workflows with MLflow, Airflow, and Docker for version control and automated deployment.",
+    ],
+    badges:[["OpenCV","chip-pink"],["YOLOv8","chip-cyan"],["PyTorch","chip-amber"],["MLflow","chip-indigo"],["AWS EC2","chip-cyan"],["GPT-4","chip-pink"]],
+  },
+  {
+    title:"Data Analyst",company:"CTDI (Embedded at Apple)",dates:"Nov 2024 – Aug 2025",loc:"West Chester, PA",
+    bullets:[
+      "Built scalable Snowflake ELT pipelines processing 1M+ Apple device repair/return records daily, improving pipeline throughput by 35% across reverse logistics operations.",
+      "Designed Power BI dashboards integrating Salesforce, SAP, and Apple systems to track device lifecycle metrics across 15+ global centers — 25% improvement in executive visibility.",
+      "Engineered dimensional Star/Snowflake schema models improving SQL query performance by 60% for 100+ analysts.",
+      "Developed forecasting and regression models (scikit-learn, Statsmodels) predicting defect rates and device return volumes with 90% accuracy.",
+    ],
+    badges:[["Snowflake","chip-cyan"],["Power BI","chip-amber"],["Salesforce","chip-pink"],["scikit-learn","chip-indigo"],["SAP","chip-cyan"],["Azure DevOps","chip-amber"]],
+  },
+  {
+    title:"Data Analyst",company:"MIAC Analytics",dates:"Jun 2024 – Aug 2024",loc:"Charlotte, NC (Intern)",
+    bullets:[
+      "Designed Power BI dashboards and DAX metrics for mortgage risk analytics, implementing present value, risk-adjusted return, and stress testing formulas that reduced manual reporting workload by 30% for a $2.8B+ loan portfolio.",
+      "Built predictive models in Python and R using logistic regression and feature engineering, improving delinquency forecast accuracy by 20%.",
+      "Developed SQL ETL pipelines with 99% accuracy meeting CFPB/SOX compliance; integrated Azure SQL and Power Automate for near real-time insights.",
+    ],
+    badges:[["Power BI","chip-amber"],["Python","chip-cyan"],["R","chip-pink"],["Azure SQL","chip-indigo"],["SOX","chip-amber"]],
+  },
+  {
+    title:"Software Engineer",company:"Accenture",dates:"Oct 2021 – Jul 2022",loc:"Hyderabad, India",
+    bullets:[
+      "Designed end-to-end data pipelines using AWS Glue and Amazon Redshift for Boehringer Ingelheim pharmaceutical datasets, reducing ETL runtime by 40%.",
+      "Built ML models on AWS SageMaker for regression, classification, and clinical time-series forecasting — improving predictive accuracy by 25%.",
+      "Designed Amazon QuickSight dashboards for clinical KPIs; implemented CI/CD workflows with Git, Docker, and AWS CodePipeline ensuring HIPAA & 21 CFR Part 11 compliance.",
+    ],
+    badges:[["AWS Glue","chip-cyan"],["Redshift","chip-pink"],["SageMaker","chip-amber"],["QuickSight","chip-indigo"],["Docker","chip-cyan"],["HIPAA","chip-amber"]],
+  },
+];
+const projects = [
+  {
+    emoji:"🧠",name:"EEG Brain Activity Health App",
+    desc:"End-to-end personal project integrating EEG wearable headbands with a mobile health and fitness app — covering hardware integration, real-time data processing, ML model development, and user-facing delivery.",
+    tech:[["Python","chip-cyan"],["TensorFlow","chip-pink"],["Real-time Processing","chip-amber"],["Mobile App","chip-indigo"]],
+  },
+  {
+    emoji:"🏀",name:"AI Basketball Scouting Platform",
+    desc:"Computer vision pipeline using YOLOv8 + PyTorch to classify play actions across 200+ NCAA teams. LLM-powered game plan generation via GPT-4 RAG with semantic search over 500+ statistical categories.",
+    tech:[["YOLOv8","chip-cyan"],["GPT-4","chip-pink"],["RAG","chip-amber"],["Apache Spark","chip-indigo"],["MLflow","chip-cyan"]],
+  },
+  {
+    emoji:"💰",name:"Financial LLM Query Interface",
+    desc:"RAG pipeline integrating OpenAI GPT-4, LangChain, and vector embeddings to enable natural-language querying of $17B+ financial datasets for McKinsey, cutting ad-hoc reporting requests by 50%.",
+    tech:[["LangChain","chip-cyan"],["FAISS","chip-pink"],["GPT-4","chip-amber"],["Power BI","chip-indigo"]],
+  },
+  {
+    emoji:"📱",name:"Apple Device Reverse Logistics Pipeline",
+    desc:"Snowflake ELT system processing 1M+ Apple device repair/return records daily with dimensional Star schema modeling, Power BI dashboards, and ML-based defect rate forecasting at 90% accuracy.",
+    tech:[["Snowflake","chip-cyan"],["Salesforce","chip-pink"],["scikit-learn","chip-amber"],["DAX","chip-indigo"]],
+  },
+  {
+    emoji:"🏦",name:"Mortgage Risk Analytics Dashboard",
+    desc:"Predictive risk analytics platform for a $2.8B+ loan portfolio — logistic regression, Monte Carlo simulations in Python/SciPy, and Power BI dashboards with CFPB/SOX compliance ETL pipelines.",
+    tech:[["Python","chip-cyan"],["R","chip-pink"],["Monte Carlo","chip-amber"],["Azure SQL","chip-indigo"]],
+  },
+  {
+    emoji:"💊",name:"Pharmaceutical Clinical ML Platform",
+    desc:"AWS SageMaker-based ML system for Boehringer Ingelheim: regression, classification, and clinical time-series forecasting for drug-response outcomes with HIPAA-compliant CI/CD pipelines.",
+    tech:[["SageMaker","chip-cyan"],["AWS Glue","chip-pink"],["Redshift","chip-amber"],["QuickSight","chip-indigo"]],
+  },
+  {
+    emoji:"⚡",name:"Real-Time Financial ETL with Airflow",
+    desc:"Apache Airflow DAG pipeline ingesting data from 15+ legacy systems (SAP, Oracle Financials), processing 500K+ daily transactions at 99.9% accuracy with automated validation and anomaly detection.",
+    tech:[["Airflow","chip-cyan"],["SAP","chip-pink"],["T-SQL","chip-amber"],["DBeaver","chip-indigo"]],
+  },
+  {
+    emoji:"📊",name:"Ridership Forecasting — Time Series",
+    desc:"ARIMA and Prophet-based time-series forecasting models predicting transit ridership patterns and revenue trends, improving budget planning accuracy by 25% through proactive resource allocation.",
+    tech:[["Prophet","chip-cyan"],["ARIMA","chip-pink"],["pandas","chip-amber"],["Plotly","chip-indigo"]],
+  },
+  {
+    emoji:"🎥",name:"Video Intelligence Pipeline (AWS)",
+    desc:"Linux-based video processing pipeline on AWS EC2 using FFmpeg and Python multiprocessing to extract 50K+ frames from YouTube and team footage, powering a computer vision training dataset at scale.",
+    tech:[["FFmpeg","chip-cyan"],["AWS EC2","chip-pink"],["PySpark","chip-amber"],["Docker","chip-indigo"]],
+  },
+];
+
+/* ===== RENDER SKILLS ===== */
+const sg = document.getElementById('skills-grid');
+skills.forEach(s=>{
+  sg.innerHTML+=`<div class="skill-item reveal from-bottom">
+    <div class="skill-meta"><span class="skill-name">${s.name}</span><span class="skill-pct">${s.pct}%</span></div>
+    <div class="bar-bg"><div class="bar-fill ${s.color}" data-pct="${s.pct}"></div></div>
+  </div>`;
+});
+const cc = document.getElementById('chip-cloud');
+chips.forEach(([name,cls])=>{
+  cc.innerHTML+=`<span class="chip ${cls}">${name}</span>`;
+});
+
+/* ===== RENDER EXPERIENCE ===== */
+const tl = document.getElementById('timeline');
+experience.forEach(e=>{
+  const badges = e.badges.map(([b,c])=>`<span class="chip ${c}" style="font-size:.72rem;padding:4px 12px">${b}</span>`).join('');
+  const bullets = e.bullets.map(b=>`<li>${b}</li>`).join('');
+  tl.innerHTML+=`<div class="exp-card reveal from-left">
+    <div class="exp-header">
+      <div class="exp-title-wrap">
+        <div class="exp-title">${e.title}</div>
+        <div class="exp-company">${e.company}</div>
+      </div>
+      <div class="exp-meta">
+        <div class="exp-dates">${e.dates}</div>
+        <div class="exp-loc">${e.loc}</div>
+      </div>
+    </div>
+    <ul class="exp-desc">${bullets}</ul>
+    <div class="exp-badges">${badges}</div>
+  </div>`;
+});
+
+/* ===== RENDER PROJECTS ===== */
+const pg = document.getElementById('projects-grid');
+projects.forEach(p=>{
+  const tech = p.tech.map(([t,c])=>`<span class="chip ${c}" style="font-size:.72rem;padding:4px 10px">${t}</span>`).join('');
+  pg.innerHTML+=`<div class="proj-card reveal from-bottom">
+    <div class="proj-emoji">${p.emoji}</div>
+    <div class="proj-name">${p.name}</div>
+    <div class="proj-desc">${p.desc}</div>
+    <div class="proj-tech">${tech}</div>
+  </div>`;
+});
+
+/* ===== PARTICLE CANVAS ===== */
+const canvas=document.getElementById('bg-canvas');
+const ctx=canvas.getContext('2d');
+let W,H,particles=[];
+const COLORS=['#3d2fa9','#ff2d78','#00e5ff','#ffb703','#5540d4'];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',()=>{resize();init()});
+function Particle(){
+  this.x=Math.random()*W;this.y=Math.random()*H;
+  this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;
+  this.r=Math.random()*2+1;
+  this.color=COLORS[Math.floor(Math.random()*COLORS.length)];
+}
+function init(){particles=[];for(let i=0;i<90;i++)particles.push(new Particle())}
+init();
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>W)p.vx*=-1;
+    if(p.y<0||p.y>H)p.vy*=-1;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=p.color+'99';ctx.fill();
+  });
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<140){
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle=particles[i].color+(Math.floor((1-dist/140)*60).toString(16).padStart(2,'0'));
+        ctx.lineWidth=.7;ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* ===== CURSOR ===== */
+const dot=document.getElementById('cursor-dot');
+const ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)}
+animRing();
+
+/* ===== LOADER ===== */
+window.addEventListener('load',()=>{setTimeout(()=>document.body.classList.add('loaded'),2000)});
+
+/* ===== INTERSECTION OBSERVER: REVEAL ===== */
+const revealObs=new IntersectionObserver(entries=>{
+  entries.forEach(el=>{
+    if(el.isIntersecting){el.target.classList.add('visible');revealObs.unobserve(el.target)}
+  });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el));
+
+/* ===== INTERSECTION OBSERVER: SKILL BARS ===== */
+const barObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.bar-fill').forEach(b=>{
+        b.style.width=b.dataset.pct+'%';
+        setTimeout(()=>b.classList.add('shimmer'),800);
+      });
+      barObs.unobserve(e.target);
+    }
+  });
+},{threshold:.2});
+document.querySelectorAll('.skills-grid').forEach(el=>barObs.observe(el));
+
+/* ===== NAV TOGGLE ===== */
+function toggleNav(){
+  const links=document.querySelector('.nav-links');
+  if(links.style.display==='flex'){links.style.display='none'}
+  else{links.style.display='flex';links.style.flexDirection='column';links.style.position='absolute';links.style.top='100%';links.style.left='0';links.style.right='0';links.style.background='rgba(7,6,15,.98)';links.style.padding='20px 5%';links.style.borderBottom='1px solid rgba(93,72,255,.2)'}
+}
+</script>
+</body>
+</html>
